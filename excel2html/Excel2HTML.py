@@ -27,19 +27,39 @@ class Excel2HTML:
 		self.verbose = verbose
 		
 		if '.csv' in inputFilename[-4:].lower():
-			return self.processCSV(inputFile)
+			self.processCSV(inputFilename)
 		elif '.xls' in inputFilename[-4:].lower():
-			return self.processExcel(inputFile)
+			self.processExcel(inputFilename)
 		elif '.xlsx' in inputFilename[-5:].lower():
-			return self.processExcel(inputFile)
+			self.processExcel(inputFilename)
 		else:
 			print 'Require valid Excel or CSV input File'
-			return None
-
-	def processCSV(self, inputFile):
+			exit(1)
+	def getHTML(self):
 		return 'test'
 
-	def processExcel(self, inputFile):
+	def processCSV(self, inputFilename):
+		inputFile = open(inputFilename, 'r')
+		inputCSV = csv.reader(inputFile)
+		index = 0
+		for row in inputCSV:
+			if index > 0:
+				for element in row:
+			else:
+				header = row
+			index += 1
+
+	def processExcel(self, inputFilename):
+		# Read in the Excel file as a list of lists
+		workbook  = openpyxl.load_workbook(excelFilename, data_only=True)
+		worksheet = workbook.worksheets[0]
+
+		rowLimit = worksheet.max_row
+		colLimit = worksheet.max_col
+		for y in xrange(0, rowLimit):
+			for x in xrange(1, colLimit:
+				if worksheet.cell(row=x, column=y).value is not None:
+					print worksheet.cell(row=x, column=1).value
 		return 'test'
 
 def main(argv):
@@ -58,7 +78,7 @@ def main(argv):
 		exit(1)
 
 	excel2HTML = Excel2HTML(options.verboseFlag, filename[0])
-	print excel2HTML
+	print excel2HTML.getHTML()
 		
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
