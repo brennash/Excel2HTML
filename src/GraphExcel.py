@@ -21,7 +21,7 @@ import datetime
 import openpyxl
 from optparse import OptionParser
 
-class Excel2HTML:
+class GraphExcel:
 
 	def __init__(self, verbose, inputFilename):
 		self.verbose = verbose
@@ -35,6 +35,7 @@ class Excel2HTML:
 		else:
 			print 'Require valid Excel or CSV input File'
 			exit(1)
+
 	def getHTML(self):
 		return 'test'
 
@@ -45,6 +46,7 @@ class Excel2HTML:
 		for row in inputCSV:
 			if index > 0:
 				for element in row:
+					print element
 			else:
 				header = row
 			index += 1
@@ -57,7 +59,7 @@ class Excel2HTML:
 		rowLimit = worksheet.max_row
 		colLimit = worksheet.max_col
 		for y in xrange(0, rowLimit):
-			for x in xrange(1, colLimit:
+			for x in xrange(1, colLimit):
 				if worksheet.cell(row=x, column=y).value is not None:
 					print worksheet.cell(row=x, column=1).value
 		return 'test'

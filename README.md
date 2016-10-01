@@ -7,4 +7,6 @@ virtualenv venv
 . venv/bin/active
 pip install openpyxl
 pip install Flask
+pip install beautifulsoup4
+pip install sqlalchemy
 ```
