@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--- HEAD ---->
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='imgs/favicon.ico') }}">
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/materialize.css')}}"/>
+  <script src="{{ url_for('static', filename='js/jquery-2.1.1.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/materialize.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap-colorpicker.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap-colorpicker-plus.js')}}"></script>
+  <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.theme.css')}}"/>
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-colorpicker.min.css')}}"/>
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-colorpicker-plus.css')}}"/>
+  <title>Excel to D3.js</title>
+</head>
+
+
+<!--- BODY ---->
+<body>
+
+  <!--- NAV-BAR ---->
+  <nav class="green darken-2" role="navigation">
+    <div class="nav-wrapper container">
+      <a id="logo-container" href="/" class="brand-logo">
+      <img src="{{ url_for('static', filename='imgs/excel-icon.png')}}" height=70 align="middle">&nbsp;&nbsp;Excel to D3.js Graph</a>
+
+      <ul class="right hide-on-med-and-down">
+      <a class='green darken-5 dropdown-button btn' href='#' data-activates='dropdown1'>Menu</a>
+      <ul id='dropdown1' class='right dropdown-content'>
+        <li><a href="about">About</a></li>
+      </ul>
+      <ul>
+    </div>
+  </nav>
+
+  <!--- CONTAINERS ---->
+  <div class="container">
+    <div class="section">
+      <p>Use the form below to upload a CSV or Excel file for parsing</p>
+    </div>
+
+    <div class="section">
+     <form class="col s12" action="/submit/" method="post" enctype="multipart/form-data" name="inputform" id="inputform">
+        <fieldset>
+          <legend>Configure Graph Output</legend>
+            <div class="row">
+              <div class="input-field col s4">
+              <select required="required" id="select_chart_type" name="select_chart_type">
+              <option value="" disabled selected>Select Chart Type</option>
+              <option value="line">Line Chart</option>
+              <option value="discrete_bar">Bar Chart</option>
+              <option value="stacked_bar">Stacked Bar Chart</option>
+              </select>
+              <label>Chart Type</label>
+            </div>
+
+            <div class="row">
+              <button type="button" class="btn btn-default" id="demo2">...</button>
+            </div>
+
+            <div class="row">
+              <div class="input-field col s3">
+                <button class="btn waves-effect waves-light green darken-5" type="submit" name="action">Generate D3.js Graph
+                  <i class="material-icons right">send</i>
+                </button>
+              </div>
+            </div>
+
+        </fieldset>
+      </form>
+    </div>
+  </div>
+
+  <!--- SELECT DROPDOWN SCRIPT ---->
+  <script>
+    $(document).ready(function() {
+      $('select').material_select();
+    });
+  </script>
+
+  <!--- COLOUR PICKER SCRIPT ---->
+  <script>
+    $(function(){
+      var demo2 = $('#demo2');
+      demo2.colorpickerplus();
+      demo2.on('changeColor', function(e){
+	if(e.color==null) {
+	  //when select transparent color
+	  $('.color-fill-icon', $(this)).addClass('colorpicker-color');
+	} else {
+	  $('.color-fill-icon', $(this)).removeClass('colorpicker-color');
+	  $('.color-fill-icon', $(this)).css('background-color', e.color);
+	}
+      });
+    });
+  </script>
+
+  </body>
+</html>

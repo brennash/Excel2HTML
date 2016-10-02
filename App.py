@@ -8,6 +8,7 @@ import os
 import csv
 import datetime
 import re
+import random
 import json
 import smtplib
 import logging
@@ -36,33 +37,41 @@ def submit():
 	""" The submit function is called once the excel file has been submitted. The session
             functionality is used to pass data between pages. 
 	"""
-	# Get the start and end dates for the week
-	#startDateStr = str(request.form.get('start_date'))
-	#endDateStr   = str(request.form.get('end_date'))
-	#startDate    = datetime.datetime.strptime(startDateStr, '%d %B, %Y')
-	#endDate      = datetime.datetime.strptime(endDateStr, '%d %B, %Y')
-
 	# Save and then process the Excel
-	#f = request.files['selectFile']
-	#app.logger.info('Read in the following file - {0}'.format(f.filename))
-	#saveName = datetime.datetime.now().strftime('Input_data_%Y%m%d_%H%M%S.xlsx')
-        #f.save("data/"+saveName)
-	#app.logger.info('Saved locally as - {0}'.format(saveName))
+	f = request.files['selectFile']
+	app.logger.info('Read in the following file - {0}'.format(f.filename))
+	fileNameTokens = f.filename.split('.')
+	prefix   = fileNameTokens[-1]
+	hexName  = ''.join([random.choice('0123456789ABCDEF') for x in range(12)])
+	fileDate = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+	saveName = '{0}_{1}.{2}'.format(hexName,fileDate,prefix)
+
+        f.save("data/"+saveName)
+	app.logger.info('Saved input file as - {0}'.format(saveName))
 
 	# Extract the data from the Excel
-	#excel           = ReadExcelFile("data/"+saveName)
+	graphExcel = GraphExcel("data/"+saveName)
 
-	#app.logger.info('Excel file parsed for {0} and {1}'.format(salesWeek, salesChannel))
+	rowSize = graphExcel.getRows()
+	colSize = graphExcel.getCols()
+	header  = graphExcel.getHeader()
+	data    = graphExcel.getData()
 
-	#return render_template('submit.html', 
-	#	return redirect(url_for('weekly_sales'))
-	return render_template('index.html')
+	session['rowSize'] = rowSize 
+	session['colSize'] = colSize
+	session['header']  = header
+	session['data']    = data
+
+	app.logger.info('{0} rows parsed from {1}'.format(rowSize, saveName))
+	# return redirect(url_for('configure'))
+	return render_template('configure.html', headerList=header) 
 
 
 if __name__ == '__main__':
-	handler = RotatingFileHandler('log/excel2html.log', maxBytes=50000, backupCount=1)
+	handler = RotatingFileHandler('log/graph_excel.log', maxBytes=50000, backupCount=1)
 	format = "%(asctime)s %(levelname)-8s %(message)s"
 	handler.setFormatter(logging.Formatter(format))
 	handler.setLevel(logging.INFO)
+	logger = logging.getLogger('graph_excel')
 	app.logger.addHandler(handler)
 	app.run(host='0.0.0.0', port=1798, debug=True)
