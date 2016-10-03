@@ -6,15 +6,15 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
   <link rel="shortcut icon" href="{{ url_for('static', filename='imgs/favicon.ico') }}">
+
+  <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/materialize.css')}}"/>
   <script src="{{ url_for('static', filename='js/jquery-2.1.1.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/materialize.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/bootstrap-colorpicker.min.js')}}"></script>
-  <script src="{{ url_for('static', filename='js/bootstrap-colorpicker-plus.js')}}"></script>
-  <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+  <script src="{{ url_for('static', filename='js/jscolor.js') }}"></script>
   <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.theme.css')}}"/>
-  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-colorpicker.min.css')}}"/>
-  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-colorpicker-plus.css')}}"/>
+
   <title>Excel to D3.js</title>
 </head>
 
@@ -39,37 +39,45 @@
 
   <!--- CONTAINERS ---->
   <div class="container">
-    <div class="section">
-      <p>Use the form below to upload a CSV or Excel file for parsing</p>
-    </div>
+    <font color="#000000">
+      <div class="section">
+        <p>Use the form below to upload a CSV or Excel file for parsing</p>
+      </div>
+    </font>
 
     <div class="section">
-     <form class="col s12" action="/submit/" method="post" enctype="multipart/form-data" name="inputform" id="inputform">
+     <form class="col s6" action="/graph/" method="post" enctype="multipart/form-data" name="inputform" id="inputform">
         <fieldset>
-          <legend>Configure Graph Output</legend>
+          <font color="#000000">
+            <legend>Configure Graph Output</legend>
             <div class="row">
               <div class="input-field col s4">
-              <select required="required" id="select_chart_type" name="select_chart_type">
-              <option value="" disabled selected>Select Chart Type</option>
-              <option value="line">Line Chart</option>
-              <option value="discrete_bar">Bar Chart</option>
-              <option value="stacked_bar">Stacked Bar Chart</option>
-              </select>
-              <label>Chart Type</label>
-            </div>
-
-            <div class="row">
-              <button type="button" class="btn btn-default" id="demo2">...</button>
-            </div>
-
-            <div class="row">
-              <div class="input-field col s3">
-                <button class="btn waves-effect waves-light green darken-5" type="submit" name="action">Generate D3.js Graph
-                  <i class="material-icons right">send</i>
-                </button>
+                <select required="required" id="select_chart_type" name="select_chart_type">
+                  <option value="" disabled selected>Select Chart Type</option>
+                  <option value="line">Line Chart</option>
+                  <option value="discrete_bar">Bar Chart</option>
+                  <option value="stacked_bar">Stacked Bar Chart</option>
+                </select>
+                <label>Chart Type</label>
               </div>
             </div>
+          </font>
 
+          <font color="#000000">
+	    {% for element in header %}
+              <div class="row">
+              &nbsp;&nbsp; Colour {{ element }}: <input class="jscolor" id="colour_select_{{ loop.index }}" name="colour_select_{{ loop.index }}" value="{{ colourList[loop.index] }}">
+              </div>
+             {% endfor %}
+          </font>
+
+          <div class="row">
+            <div class="input-field col s3">
+              <button class="btn waves-effect waves-light green darken-5" type="submit" name="action">Generate D3.js Graph
+                <i class="material-icons right">send</i>
+              </button>
+            </div>
+          </div>
         </fieldset>
       </form>
     </div>
@@ -77,27 +85,23 @@
 
   <!--- SELECT DROPDOWN SCRIPT ---->
   <script>
+    $('#textarea1').val('');
+    $('#textarea1').trigger('autoresize');
+  </script>  
+
+  <script>
     $(document).ready(function() {
       $('select').material_select();
     });
   </script>
 
-  <!--- COLOUR PICKER SCRIPT ---->
   <script>
-    $(function(){
-      var demo2 = $('#demo2');
-      demo2.colorpickerplus();
-      demo2.on('changeColor', function(e){
-	if(e.color==null) {
-	  //when select transparent color
-	  $('.color-fill-icon', $(this)).addClass('colorpicker-color');
-	} else {
-	  $('.color-fill-icon', $(this)).removeClass('colorpicker-color');
-	  $('.color-fill-icon', $(this)).css('background-color', e.color);
-	}
-      });
+    $(document).ready(function() {
+      $("select").material_select();
+      $("select[required]").css({display: "inline", height: 0, padding: 0, width: 0});
     });
   </script>
+
 
   </body>
 </html>

@@ -44,7 +44,7 @@ def submit():
 	prefix   = fileNameTokens[-1]
 	hexName  = ''.join([random.choice('0123456789ABCDEF') for x in range(12)])
 	fileDate = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-	saveName = '{0}_{1}.{2}'.format(hexName,fileDate,prefix)
+	saveName = 'Input_{0}_{1}.{2}'.format(hexName,fileDate,prefix)
 
         f.save("data/"+saveName)
 	app.logger.info('Saved input file as - {0}'.format(saveName))
@@ -56,6 +56,7 @@ def submit():
 	colSize = graphExcel.getCols()
 	header  = graphExcel.getHeader()
 	data    = graphExcel.getData()
+	colours = graphExcel.getRandomColours()
 
 	session['rowSize'] = rowSize 
 	session['colSize'] = colSize
@@ -64,7 +65,28 @@ def submit():
 
 	app.logger.info('{0} rows parsed from {1}'.format(rowSize, saveName))
 	# return redirect(url_for('configure'))
-	return render_template('configure.html', headerList=header) 
+	return render_template('configure.html', header=header[1:], colourList=colours) 
+
+# The route used to submit the Excel or CSV data as a file
+@app.route('/graph/', methods=['POST'])
+def graph():
+	rowSize         = session['rowSize']
+	colSize         = session['colSize']
+	header          = session['header']
+	data            = session['data']
+	chartType       = request.form.get('select_chart_type')
+	chartColourList = []
+
+	requestForm = request.form
+	for requestKey in requestForm.keys():
+		for value in requestForm.getlist(requestKey):
+			if 'colour_select' in requestKey:
+				chartColourList.append(value)
+
+	grapher = GraphGenerator(rowSize, colSize, header, data, chartType, chartColourList)
+	graphHTML = grapher.getHTML()
+
+	return render_template('graph.html', graph=graphHTML) 
 
 
 if __name__ == '__main__':
